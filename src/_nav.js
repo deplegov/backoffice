@@ -1,7 +1,7 @@
 import React from "react";
 import CIcon from "@coreui/icons-react";
-import { cilPencil, cilUser, cilMoney, cilCreditCard } from "@coreui/icons";
-import { CNavGroup, CNavItem, CNavTitle } from "@coreui/react";
+import { cilUser, cilCreditCard } from "@coreui/icons";
+import { CNavItem, CNavTitle } from "@coreui/react";
 
 // NAVIGATION ADMIN
 const nav = [
@@ -13,8 +13,8 @@ const nav = [
         {
           component: CNavItem,
           name: "Validation",
-          to: "/purchase/list",
-          icon: <CIcon icon={cilMoney} customClassName="nav-icon" />,
+          to: "/registration",
+          icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
         },
       ],
     },

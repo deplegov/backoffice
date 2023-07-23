@@ -1,4 +1,6 @@
 import React from "react";
+const Registration = React.lazy(() => import("./views/pages/registration/registration"));
+const RegistrationValidation = React.lazy(() => import("./views/pages/registration/registrationValidation"));
 //Home
 const Home = React.lazy(() => import("./views/pages/Home/Home"));
 
@@ -97,6 +99,16 @@ const GlobalStatistique = React.lazy(() =>
 );
 
 const routes = [
+  {
+    path: "/registration/:id",
+    name: "Details et calidation d'inscription",
+    component: RegistrationValidation,
+  },
+  {
+    path: "/registration",
+    name: "Validation des inscriptions",
+    component: Registration,
+  },
   //Home
   {
     path: "/Home",
