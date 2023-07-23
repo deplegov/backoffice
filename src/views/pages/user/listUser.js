@@ -19,6 +19,11 @@ import {
   CModalTitle,
   CModalBody,
   CModalFooter,
+  CForm,
+  CFormInput,
+  CInputGroup,
+  CFormSelect,
+  CInputGroupText,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { cilPlus, cilPencil, cilTrash, cilLockLocked } from "@coreui/icons";
@@ -34,11 +39,15 @@ export default class ListUser extends React.Component {
       deleteModalState: false,
       loading: true,
       users: null,
+      roles: null,
       pagination: [],
       totalPage: 0,
       pageList: 1,
       pageNumber: 10,
       error: "",
+      activated: null,
+      role_id: null,
+      name: null,
       id: 0,
     };
   }
@@ -67,7 +76,22 @@ export default class ListUser extends React.Component {
         activated: 0,
       },
     ];
-    this.setState({ users: userTemp });
+    const roleTemp = [
+      {
+        id: 1,
+        entitled: "Role1",
+        description: "Accès limité",
+        access: ["Liste utilisateur", "Statistique apple d'offre"],
+      },
+      {
+        id: 1,
+        entitled: "Role2",
+        description: "Accès complet",
+        access: ["Tous"],
+      },
+    ];
+
+    this.setState({ users: userTemp, roles: roleTemp });
   }
 
   pagination = (totalPages) => {
@@ -142,76 +166,160 @@ export default class ListUser extends React.Component {
       totalPage,
       deleteModalState,
       id,
+      roles,
     } = this.state;
     // if (loading) {
     //   return <Loading />;
     // }
     return (
       <>
+        <CRow className="justify-content-center">
+          <CCol md={9} lg={9} xl={6}>
+            <CCard className="mx-4">
+              <div style={{ overflowX: "auto" }}>
+                <CForm
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                  }}
+                  style={{
+                    display: "flex",
+                    flexWrap: "nowrap",
+                    alignItems: "center",
+                  }}
+                >
+                  <CInputGroup>
+                    <CInputGroupText
+                      component="label"
+                      htmlFor="inputGroupSelect01"
+                    >
+                      Nom
+                    </CInputGroupText>
+                    <CFormInput
+                      id="inputGroupSelect01"
+                      onChange={this.setName}
+                      required
+                    ></CFormInput>
+                  </CInputGroup>
+                  <CInputGroup>
+                    <CInputGroupText
+                      component="label"
+                      htmlFor="inputGroupSelect01"
+                    >
+                      Role
+                    </CInputGroupText>
+                    <CFormSelect
+                      id="inputGroupSelect01"
+                      onChange={this.setRoleId}
+                      required
+                    >
+                      <option> </option>
+                      {roles &&
+                        roles.map((c, index) => (
+                          <option key={index} value={c.id}>
+                            {c.entitled}
+                          </option>
+                        ))}
+                    </CFormSelect>
+                  </CInputGroup>
+                  <CInputGroup>
+                    <CInputGroupText
+                      component="label"
+                      htmlFor="inputGroupSelect01"
+                    >
+                      Status
+                    </CInputGroupText>
+                    <CFormSelect
+                      id="inputGroupSelect01"
+                      onChange={this.setActivation}
+                      required
+                    >
+                      <option value={1}>Activer </option>
+
+                      <option value={0}> Désactiver</option>
+                    </CFormSelect>
+                  </CInputGroup>
+                  <div className="d-grid">
+                    <CButton
+                      color="success"
+                      type="submit"
+                      onClick={() => this.updateUser()}
+                    >
+                      voir
+                    </CButton>
+                  </div>
+                </CForm>
+              </div>
+            </CCard>
+          </CCol>
+        </CRow>
         <CRow>
           <CCol xs={12}>
             <CCard className="mb-4">
               <CCardBody>
-                <CTable>
-                  <CTableHead>
-                    <CTableRow>
-                      <CTableHeaderCell scope="col">Name </CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Prénom</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Genre</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Adresse</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Numero</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Email</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Status</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">
-                        Date de création
-                      </CTableHeaderCell>
-                    </CTableRow>
-                  </CTableHead>
-                  <CTableBody>
-                    {users &&
-                      users.map((user, index) => (
-                        <CTableRow key={user.id}>
-                          <CTableDataCell>{user.name}</CTableDataCell>
-                          <CTableDataCell>{user.surname}</CTableDataCell>
-                          <CTableDataCell>{user.gender}</CTableDataCell>
-                          <CTableDataCell>{user.address}</CTableDataCell>
-                          <CTableDataCell>{user.number_phone}</CTableDataCell>
-                          <CTableDataCell>{user.email}</CTableDataCell>
-                          {user.activated === 0 ? (
-                            <CTableDataCell style={{ color: "red" }}>
-                              Désactiver
-                            </CTableDataCell>
-                          ) : (
-                            <CTableDataCell style={{ color: "green" }}>
-                              Activer
-                            </CTableDataCell>
-                          )}
-
-                          <CTableDataCell>
-                            {moment(user.created_date).format(
-                              "YYYY-MM-DD HH:mm:ss"
+                <div style={{ overflowX: "auto" }}>
+                  <CTable>
+                    <CTableHead>
+                      <CTableRow>
+                        <CTableHeaderCell scope="col">Name </CTableHeaderCell>
+                        <CTableHeaderCell scope="col">Prénom</CTableHeaderCell>
+                        <CTableHeaderCell scope="col">Genre</CTableHeaderCell>
+                        <CTableHeaderCell scope="col">Adresse</CTableHeaderCell>
+                        <CTableHeaderCell scope="col">Numero</CTableHeaderCell>
+                        <CTableHeaderCell scope="col">Email</CTableHeaderCell>
+                        <CTableHeaderCell scope="col">Status</CTableHeaderCell>
+                        <CTableHeaderCell scope="col">
+                          Date de création
+                        </CTableHeaderCell>
+                      </CTableRow>
+                    </CTableHead>
+                    <CTableBody>
+                      {users &&
+                        users.map((user, index) => (
+                          <CTableRow key={user.id}>
+                            <CTableDataCell>{user.name}</CTableDataCell>
+                            <CTableDataCell>{user.surname}</CTableDataCell>
+                            <CTableDataCell>{user.gender}</CTableDataCell>
+                            <CTableDataCell>{user.address}</CTableDataCell>
+                            <CTableDataCell>{user.number_phone}</CTableDataCell>
+                            <CTableDataCell>{user.email}</CTableDataCell>
+                            {user.activated === 0 ? (
+                              <CTableDataCell style={{ color: "red" }}>
+                                Désactiver
+                              </CTableDataCell>
+                            ) : (
+                              <CTableDataCell style={{ color: "green" }}>
+                                Activer
+                              </CTableDataCell>
                             )}
-                          </CTableDataCell>
-                          <CTableDataCell>
-                            <CButton
-                              color={"light"}
-                              onClick={() => this.accessAuthorization(user.id)}
-                            >
-                              Autorisations d'accès <CIcon icon={cilPencil} />
-                            </CButton>
-                          </CTableDataCell>
-                          <CTableDataCell>
-                            <CButton
-                              color={"danger"}
-                              onClick={() => this.userActivation(index)}
-                            >
-                              Activation <CIcon icon={cilLockLocked} />
-                            </CButton>
-                          </CTableDataCell>
-                        </CTableRow>
-                      ))}
-                  </CTableBody>
-                </CTable>
+
+                            <CTableDataCell>
+                              {moment(user.created_date).format(
+                                "YYYY-MM-DD HH:mm:ss"
+                              )}
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              <CButton
+                                color={"light"}
+                                onClick={() =>
+                                  this.accessAuthorization(user.id)
+                                }
+                              >
+                                Autorisations d'accès <CIcon icon={cilPencil} />
+                              </CButton>
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              <CButton
+                                color={"danger"}
+                                onClick={() => this.userActivation(index)}
+                              >
+                                Activation <CIcon icon={cilLockLocked} />
+                              </CButton>
+                            </CTableDataCell>
+                          </CTableRow>
+                        ))}
+                    </CTableBody>
+                  </CTable>
+                </div>
                 <CPagination aria-label="Page navigation example">
                   <CPaginationItem
                     aria-label="Previous"
@@ -288,6 +396,25 @@ export default class ListUser extends React.Component {
       id: id,
     });
   }
+
+  setActivation(e) {
+    this.setState({
+      activated: e.target.value,
+    });
+  }
+
+  setRoleId(e) {
+    this.setState({
+      role_id: e.target.value,
+    });
+  }
+
+  setName(e) {
+    this.setState({
+      name: e.target.value,
+    });
+  }
+
   setDeleteModalState(modal) {
     this.setState({
       deleteModalState: modal,
