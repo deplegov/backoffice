@@ -1,10 +1,4 @@
 import React from "react";
-import GameOptionInsert from "./views/pages/game/GameOptionInsert";
-import GameConsoleList from "./views/pages/game/GameConsoleList";
-import GameOptionList from "./views/pages/game/GameOptionLists";
-import GameTime from "./views/pages/game/GameTimes";
-import GameConsoleInsert from "./views/pages/game/GameConsoleInsert";
-import GameOptionUpdate from "./views/pages/game/GameOptionUpdate";
 //Home
 const Home = React.lazy(() => import("./views/pages/Home/Home"));
 
@@ -273,39 +267,6 @@ const routes = [
     name: "Statistique global",
     component: GlobalStatistique,
   },
-  // Game Console
-  {
-    path: "/game/configuration/console/list",
-    name: "Liste des consoles",
-    component: GameConsoleList,
-  },
-  {
-    path: "/game/console/insert",
-    name: "Insertion console",
-    component: GameConsoleInsert,
-  },
-  //Game Option
-  {
-    path: "/game/configuration/option/list",
-    name: "Liste des options",
-    component: GameOptionList,
-  },
-  {
-    path: "/game/option/insert",
-    name: "Insertion option",
-    component: GameOptionInsert,
-  },
-  {
-    path: "/game/option/update",
-    name: "Modification option",
-    component: GameOptionUpdate,
-  },
 
-  //Game time
-  {
-    path: "/game/time",
-    name: "Temps",
-    component: GameTime,
-  },
 ];
 export default routes;
