@@ -14,6 +14,7 @@ import {
 } from "@coreui/react";
 import api from "../../../const/api";
 import Loading from "../Loading";
+import BackButton from "../../../components/BackButton";
 
 export default class AccessAuthorizationUser extends React.Component {
   constructor(props) {
@@ -138,6 +139,7 @@ export default class AccessAuthorizationUser extends React.Component {
           </>
         ) : (
           <CContainer>
+            <BackButton to={"/user/list"} />
             <CRow className="justify-content-center">
               <CCol md={9} lg={9} xl={6}>
                 <CCard className="mx-4">
