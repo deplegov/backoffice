@@ -64,6 +64,7 @@ export default class ListUser extends React.Component {
         number_phone: "033313516",
         email: "defaul@gmail.com",
         activated: 1,
+        role_id: 1,
       },
       {
         id: 2,
@@ -74,6 +75,7 @@ export default class ListUser extends React.Component {
         number_phone: "03336556",
         email: "defaul2@gmail.com",
         activated: 0,
+        role_id: 2,
       },
     ];
     const roleTemp = [
@@ -156,6 +158,16 @@ export default class ListUser extends React.Component {
     this.props.history.push("/user/update/password/" + id);
   }
 
+  search() {
+    const { activated, role_id, name, users } = this.state;
+    console.log(role_id);
+
+    const usersValue = users.map((user) =>{
+
+    } ;
+    console.log("usersValue", usersValue);
+  }
+
   render() {
     const {
       users,
@@ -197,7 +209,6 @@ export default class ListUser extends React.Component {
                     <CFormInput
                       id="inputGroupSelect01"
                       onChange={this.setName}
-                      required
                     ></CFormInput>
                   </CInputGroup>
                   <CInputGroup>
@@ -210,7 +221,6 @@ export default class ListUser extends React.Component {
                     <CFormSelect
                       id="inputGroupSelect01"
                       onChange={this.setRoleId}
-                      required
                     >
                       <option> </option>
                       {roles &&
@@ -231,7 +241,6 @@ export default class ListUser extends React.Component {
                     <CFormSelect
                       id="inputGroupSelect01"
                       onChange={this.setActivation}
-                      required
                     >
                       <option value={1}>Activer </option>
 
@@ -242,7 +251,7 @@ export default class ListUser extends React.Component {
                     <CButton
                       color="success"
                       type="submit"
-                      onClick={() => this.updateUser()}
+                      onClick={() => this.search()}
                     >
                       voir
                     </CButton>
@@ -397,23 +406,23 @@ export default class ListUser extends React.Component {
     });
   }
 
-  setActivation(e) {
+  setActivation = (e) => {
     this.setState({
       activated: e.target.value,
     });
-  }
+  };
 
-  setRoleId(e) {
+  setRoleId = (e) => {
     this.setState({
       role_id: e.target.value,
     });
-  }
+  };
 
-  setName(e) {
+  setName = (e) => {
     this.setState({
       name: e.target.value,
     });
-  }
+  };
 
   setDeleteModalState(modal) {
     this.setState({
