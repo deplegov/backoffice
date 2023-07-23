@@ -162,9 +162,7 @@ export default class ListUser extends React.Component {
     const { activated, role_id, name, users } = this.state;
     console.log(role_id);
 
-    const usersValue = users.map((user) =>{
-
-    } ;
+    const usersValue = users.map((user) => {});
     console.log("usersValue", usersValue);
   }
 
