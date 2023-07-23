@@ -44,7 +44,30 @@ export default class ListUser extends React.Component {
   }
 
   componentDidMount() {
-    this.getUserData(1);
+    // this.getUserData(1);
+    const userTemp = [
+      {
+        id: 1,
+        name: "User",
+        surname: "Default",
+        gender: "M",
+        address: "Tana",
+        number_phone: "033313516",
+        email: "defaul@gmail.com",
+        activated: 1,
+      },
+      {
+        id: 2,
+        name: "User2",
+        surname: "Default2",
+        gender: "M",
+        address: "Tana",
+        number_phone: "03336556",
+        email: "defaul2@gmail.com",
+        activated: 0,
+      },
+    ];
+    this.setState({ users: userTemp });
   }
 
   pagination = (totalPages) => {
@@ -73,7 +96,7 @@ export default class ListUser extends React.Component {
     });
   };
 
-  deleteUser() {
+  activatedUser(activation) {
     fetch(api(`users/${this.state.users[this.state.id].id}`), {
       method: "DELETE",
     }).then((res) => {
@@ -88,7 +111,7 @@ export default class ListUser extends React.Component {
     });
   }
 
-  userToDelete(index) {
+  userActivation(index) {
     this.setId(index);
     this.setDeleteModalState(true);
   }
@@ -102,8 +125,8 @@ export default class ListUser extends React.Component {
   addUser() {
     this.props.history.push("/register");
   }
-  userUpdate(id) {
-    this.props.history.push("/user/update/info/" + id);
+  accessAuthorization(id) {
+    this.props.history.push("/user/accessAuthorization/" + id);
   }
   userUpdatePassword(id) {
     this.props.history.push("/user/update/password/" + id);
@@ -120,34 +143,25 @@ export default class ListUser extends React.Component {
       deleteModalState,
       id,
     } = this.state;
-    if (loading) {
-      return <Loading />;
-    }
+    // if (loading) {
+    //   return <Loading />;
+    // }
     return (
       <>
         <CRow>
           <CCol xs={12}>
             <CCard className="mb-4">
-              <CCardHeader>
-                <span className="d-grid gap-2 d-md-flex justify-content-between">
-                  <strong>Liste des utilisateurs</strong>
-                  <CButton color={"primary"} onClick={() => this.addUser()}>
-                    <CIcon icon={cilPlus} className="me-2" />
-                    Ajouter
-                  </CButton>
-                </span>
-              </CCardHeader>
               <CCardBody>
                 <CTable>
                   <CTableHead>
                     <CTableRow>
-                      <CTableHeaderCell scope="col">Role </CTableHeaderCell>
                       <CTableHeaderCell scope="col">Name </CTableHeaderCell>
                       <CTableHeaderCell scope="col">Prénom</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Genre</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Adresse</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Numero</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Email</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">Status</CTableHeaderCell>
                       <CTableHeaderCell scope="col">
                         Date de création
                       </CTableHeaderCell>
@@ -157,15 +171,22 @@ export default class ListUser extends React.Component {
                     {users &&
                       users.map((user, index) => (
                         <CTableRow key={user.id}>
-                          <CTableDataCell>
-                            {user.role_id.entitled}
-                          </CTableDataCell>
                           <CTableDataCell>{user.name}</CTableDataCell>
                           <CTableDataCell>{user.surname}</CTableDataCell>
                           <CTableDataCell>{user.gender}</CTableDataCell>
                           <CTableDataCell>{user.address}</CTableDataCell>
                           <CTableDataCell>{user.number_phone}</CTableDataCell>
                           <CTableDataCell>{user.email}</CTableDataCell>
+                          {user.activated === 0 ? (
+                            <CTableDataCell style={{ color: "red" }}>
+                              Désactiver
+                            </CTableDataCell>
+                          ) : (
+                            <CTableDataCell style={{ color: "green" }}>
+                              Activer
+                            </CTableDataCell>
+                          )}
+
                           <CTableDataCell>
                             {moment(user.created_date).format(
                               "YYYY-MM-DD HH:mm:ss"
@@ -174,25 +195,17 @@ export default class ListUser extends React.Component {
                           <CTableDataCell>
                             <CButton
                               color={"light"}
-                              onClick={() => this.userUpdate(user.id)}
+                              onClick={() => this.accessAuthorization(user.id)}
                             >
-                              Info <CIcon icon={cilPencil} />
-                            </CButton>
-                          </CTableDataCell>
-                          <CTableDataCell>
-                            <CButton
-                              color={"light"}
-                              onClick={() => this.userUpdatePassword(user.id)}
-                            >
-                              Mot de passe <CIcon icon={cilLockLocked} />
+                              Autorisations d'accès <CIcon icon={cilPencil} />
                             </CButton>
                           </CTableDataCell>
                           <CTableDataCell>
                             <CButton
                               color={"danger"}
-                              onClick={() => this.userToDelete(index)}
+                              onClick={() => this.userActivation(index)}
                             >
-                              <CIcon icon={cilTrash} />
+                              Activation <CIcon icon={cilLockLocked} />
                             </CButton>
                           </CTableDataCell>
                         </CTableRow>
@@ -237,15 +250,12 @@ export default class ListUser extends React.Component {
           onClose={() => this.setDeleteModalState(false)}
         >
           <CModalHeader>
-            <CModalTitle>Supprimer</CModalTitle>
+            <CModalTitle>Activer ou Désactiver</CModalTitle>
           </CModalHeader>
           <CModalBody>
             <p>
-              Voulez vous supprimer{" "}
-              {users &&
-                users.length > 0 &&
-                id < users.length &&
-                users[id].entitled}
+              Voulez-vous activer ou désactiver{" "}
+              {users && users.length > 0 && id < users.length && users[id].name}
               ?
             </p>
           </CModalBody>
@@ -256,8 +266,11 @@ export default class ListUser extends React.Component {
             >
               Annuler
             </CButton>
-            <CButton color="danger" onClick={() => this.deleteUser()}>
-              Supprimer
+            <CButton color="danger" onClick={() => this.activatedUser(0)}>
+              Désactiver
+            </CButton>
+            <CButton color="success" onClick={() => this.activatedUser(1)}>
+              Activer
             </CButton>
           </CModalFooter>
         </CModal>

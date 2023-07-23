@@ -10,7 +10,9 @@ const UpdateRole = React.lazy(() => import("./views/pages/role/updateRole"));
 //User
 const ListUser = React.lazy(() => import("./views/pages/user/listUser"));
 const Register = React.lazy(() => import("./views/pages/user/Register"));
-const UpdateUser = React.lazy(() => import("./views/pages/user/updateUser"));
+const AccessAuthorizationUser = React.lazy(() =>
+  import("./views/pages/user/AccessAuthorizationUser")
+);
 const UpdateUserPass = React.lazy(() =>
   import("./views/pages/user/updateUserPass")
 );
@@ -130,9 +132,9 @@ const routes = [
     component: Register,
   },
   {
-    path: "/user/update/info/:id",
-    name: "Modification info utilisateur",
-    component: UpdateUser,
+    path: "/user/accessAuthorization/:id",
+    name: "Autorisation d'accès de l'utilisateur",
+    component: AccessAuthorizationUser,
   },
   {
     path: "/user/update/password/:id",
@@ -267,6 +269,5 @@ const routes = [
     name: "Statistique global",
     component: GlobalStatistique,
   },
-
 ];
 export default routes;

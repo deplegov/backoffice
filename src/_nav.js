@@ -30,12 +30,12 @@ const nav = [
           to: "/user/list",
           icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
         },
-        {
-          component: CNavItem,
-          name: "Client",
-          to: "/Customer/list",
-          icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
-        },
+        // {
+        //   component: CNavItem,
+        //   name: "Client",
+        //   to: "/Customer/list",
+        //   icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
+        // },
       ],
     },
   ],

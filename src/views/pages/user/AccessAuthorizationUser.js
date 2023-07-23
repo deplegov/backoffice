@@ -15,19 +15,12 @@ import {
 import api from "../../../const/api";
 import Loading from "../Loading";
 
-export default class UpdateUser extends React.Component {
+export default class AccessAuthorizationUser extends React.Component {
   constructor(props) {
     super(props);
     const { match } = props;
     this.state = {
       user_id: match && match.params && match.params.id,
-      name: "",
-      surname: "",
-      username: "",
-      number_phone: "",
-      gender: "",
-      address: "",
-      email: "",
       role_id: null,
       role: null,
       user: null,
@@ -38,8 +31,39 @@ export default class UpdateUser extends React.Component {
   }
 
   componentDidMount() {
-    this.getUser();
-    this.getRole();
+    // this.getUser();
+    // this.getRole();
+    const userTemp = {
+      id: 1,
+      name: "User",
+      surname: "Default",
+      gender: "H",
+      address: "Tana",
+      number_phone: "033313516",
+      email: "defaul@gmail.com",
+      activated: "Activer",
+      role_id: 1,
+    };
+    const roleTemp = [
+      {
+        id: 1,
+        entitled: "Role1",
+        description: "Accès limité",
+        access: ["Liste utilisateur", "Statistique apple d'offre"],
+      },
+      {
+        id: 1,
+        entitled: "Role2",
+        description: "Accès complet",
+        access: ["Tous"],
+      },
+    ];
+    this.setState({
+      user: userTemp,
+      role_id: userTemp.role_id,
+      role: roleTemp,
+      ready: true,
+    });
   }
 
   getUser() {
@@ -50,13 +74,6 @@ export default class UpdateUser extends React.Component {
           if (data) {
             this.setState({
               user: data.user,
-              name: data.user.name,
-              surname: data.user.surname,
-              username: data.user.username,
-              gender: data.user.gender,
-              address: data.user.address,
-              number_phone: data.user.number_phone,
-              email: data.user.email,
               role_id: data.user.role_id.id,
               ready: true,
             });
@@ -88,13 +105,13 @@ export default class UpdateUser extends React.Component {
       headers: { "Content-Type": "application/json" },
       method: "PUT",
       body: JSON.stringify({
-        name: this.state.name,
-        surname: this.state.surname,
-        username: this.state.username,
-        gender: this.state.gender,
-        address: this.state.address,
-        number_phone: this.state.number_phone,
-        email: this.state.email,
+        name: this.state.user.name,
+        surname: this.state.user.surname,
+        username: this.state.user.username,
+        gender: this.state.user.gender,
+        address: this.state.user.address,
+        number_phone: this.state.user.number_phone,
+        email: this.state.user.email,
         role_id: this.state.role_id,
         modification_date: new Date(),
       }),
@@ -103,7 +120,7 @@ export default class UpdateUser extends React.Component {
         console.log(res);
         this.setError("Modification réussie");
         this.setLoad(false);
-        this.props.history.push("/Home");
+        this.props.history.push("/user/list");
       } else
         res.json().then((res) => {
           this.setError(res.message);
@@ -112,21 +129,7 @@ export default class UpdateUser extends React.Component {
     });
   }
   render() {
-    const {
-      name,
-      surname,
-      username,
-      gender,
-      user,
-      role_id,
-      role,
-      address,
-      number_phone,
-      email,
-      ready,
-      error,
-      load,
-    } = this.state;
+    const { user, role_id, role, ready, error, load } = this.state;
     return (
       <div className="bg-light min-vh-50 d-flex flex-row align-items-center">
         {!ready ? (
@@ -135,7 +138,37 @@ export default class UpdateUser extends React.Component {
           </>
         ) : (
           <CContainer>
-            {" "}
+            <CRow className="justify-content-center">
+              <CCol md={9} lg={9} xl={6}>
+                <CCard className="mx-4">
+                  <CCardBody className="p-4">
+                    {" "}
+                    <h1 style={{ color: "green" }}>Autorisation d'accès</h1>
+                    <h6>
+                      Utilisateur: {user.name} {user.surname}
+                    </h6>
+                    <h6> Adresse: {user.address}</h6>
+                    <h6> Numéro de téléphone: {user.number_phone}</h6>
+                    <h6> Email : {user.email}</h6>
+                    <br />
+                    {role &&
+                      role.map((c, index) => (
+                        <>
+                          <h5 style={{ color: "red" }}>
+                            Autorisation {index + 1} : {c.entitled}
+                          </h5>
+                          <h6>Description: {c.description}</h6>
+                          <ul>
+                            {c.access.map((acces) => (
+                              <li>{acces}</li>
+                            ))}
+                          </ul>
+                        </>
+                      ))}
+                  </CCardBody>
+                </CCard>
+              </CCol>
+            </CRow>
             <CRow className="justify-content-center">
               <CCol md={9} lg={9} xl={6}>
                 <CCard className="mx-4">
@@ -145,90 +178,12 @@ export default class UpdateUser extends React.Component {
                         e.preventDefault();
                       }}
                     >
-                      <h1>Modification utilisateur</h1>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>Nom</CInputGroupText>
-                        <CFormInput
-                          type="text"
-                          placeholder={user.name}
-                          autoComplete="Nom"
-                          value={name}
-                          onChange={this.setName}
-                        />
-                      </CInputGroup>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>Prénom</CInputGroupText>
-                        <CFormInput
-                          type="text"
-                          placeholder={user.surname}
-                          autoComplete="Prénom"
-                          value={surname}
-                          onChange={this.setSurname}
-                        />
-                      </CInputGroup>
                       <CInputGroup className="mb-3">
                         <CInputGroupText
                           component="label"
                           htmlFor="inputGroupSelect01"
                         >
-                          Genre
-                        </CInputGroupText>
-                        <CFormSelect
-                          id="inputGroupSelect01"
-                          onChange={this.setGender}
-                          value={gender}
-                          required
-                        >
-                          <option value={"M"}>Homme</option>
-                          <option value={"F"}>Femme</option>
-                        </CFormSelect>
-                      </CInputGroup>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>Adresse</CInputGroupText>
-                        <CFormInput
-                          type="text"
-                          placeholder={user.address}
-                          autoComplete="Adresse"
-                          value={address}
-                          onChange={this.setAddress}
-                        />
-                      </CInputGroup>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>Numéro de téléphone</CInputGroupText>
-                        <CFormInput
-                          type="number"
-                          placeholder={user.number_phone}
-                          autoComplete="Numéro de téléphone"
-                          value={number_phone}
-                          onChange={this.setNumberPhone}
-                        />
-                      </CInputGroup>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>@</CInputGroupText>
-                        <CFormInput
-                          type="email"
-                          placeholder={user.email}
-                          autoComplete="Email"
-                          value={email}
-                          onChange={this.setEmail}
-                        />
-                      </CInputGroup>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>Username</CInputGroupText>
-                        <CFormInput
-                          type="text"
-                          placeholder={user.username}
-                          autoComplete="Username"
-                          value={username}
-                          onChange={this.setUsername}
-                        />
-                      </CInputGroup>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText
-                          component="label"
-                          htmlFor="inputGroupSelect01"
-                        >
-                          Role
+                          Autorisation (Role)
                         </CInputGroupText>
                         <CFormSelect
                           id="inputGroupSelect01"
