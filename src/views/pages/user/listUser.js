@@ -86,7 +86,7 @@ export default class ListUser extends React.Component {
         access: ["Liste utilisateur", "Statistique apple d'offre"],
       },
       {
-        id: 1,
+        id: 2,
         entitled: "Role2",
         description: "Accès complet",
         access: ["Tous"],
@@ -160,10 +160,7 @@ export default class ListUser extends React.Component {
 
   search() {
     const { activated, role_id, name, users } = this.state;
-    console.log(role_id);
-
-    const usersValue = users.map((user) => {});
-    console.log("usersValue", usersValue);
+    // function to search
   }
 
   render() {

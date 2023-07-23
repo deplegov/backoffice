@@ -52,7 +52,7 @@ export default class AccessAuthorizationUser extends React.Component {
         access: ["Liste utilisateur", "Statistique apple d'offre"],
       },
       {
-        id: 1,
+        id: 2,
         entitled: "Role2",
         description: "Accès complet",
         access: ["Tous"],
