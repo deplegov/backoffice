@@ -12,7 +12,7 @@ class AppFooter extends React.Component {
         </div>
         <div className="ms-auto">
           <span className="me-1">Powered by</span>
-          Misaina
+          E-gouvernance
         </div>
       </CFooter>
     );
