@@ -6,6 +6,11 @@ import {
   CCardTitle,
   CInputGroup,
   CFormInput,
+  CInputGroupText,
+  CFormSelect,
+  CRow,
+  CButton,
+  CCol,
 } from "@coreui/react";
 import { CChart } from "@coreui/react-chartjs";
 import api from "../../../const/api";
@@ -15,233 +20,189 @@ export default class GlobalStatistique extends React.Component {
     super(props);
     this.state = {
       loading: true,
-      firstDateDefault: "",
-      secondDateDefault: "",
-      dataMonthEntry: [],
-      dataMonthExpense: [],
-      dataMonthBenefit: [],
-      labels: [],
+      dataMonthEntry: [1423, 2874],
+      dataMonthExpense: [9172, 6821],
+      dataMonthBenefit: [3800, 2891],
+      labels: ['Analamanga', 'Vakinakaratra'],
       firstDate: "",
       secondDate: "",
       totalMonth: [],
+      typeFilter: 0,
     };
   }
-  async componentDidMount() {
-    await this.formatDateDefault();
-    this.getGlobalStatistique(
-      this.state.firstDateDefault,
-      this.state.secondDateDefault
-    );
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({
+        loading: false,
+      });
+    }, 1000);
   }
 
-  async formatDateDefault() {
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfMonth = new Date(
-      startOfMonth.getFullYear(),
-      startOfMonth.getMonth() + 2,
-      0
-    );
-    this.setFirstDateDefault(
-      startOfMonth.getFullYear() + "-" + (startOfMonth.getMonth() + 1) + "-" + 1
-    );
-    this.setSeconDateDefault(
-      endOfMonth.getFullYear() +
-        "-" +
-        endOfMonth.getMonth() +
-        "-" +
-        endOfMonth.getDate()
-    );
-  }
-
-  getGlobalStatistique = (firstDate, secondDate) => {
-    if (firstDate === "") {
-      firstDate = this.state.firstDateDefault;
-    } else if (secondDate === "") {
-      secondDate = this.state.secondDateDefault;
-    }
-    this.setLoading(true);
-    fetch(api(`entry/statistique/${firstDate}/${secondDate}`)).then((res) => {
-      if (res.ok) {
-        return res.json().then((data) => {
-          if (data) {
-            this.setState({
-              totalMonth: data.totalMonth,
-            });
-
-            const labels = [];
-            const dataMonthEntry = [];
-            const dataMonthExpense = [];
-            const dataMonthBenefit = [];
-            data.month.entryMonth.forEach((entry, index) => {
-              if (
-                entry.month === data.month.expenseMonth[index].month &&
-                entry.month === data.month.benefitMonth[index].month
-              ) {
-                dataMonthEntry.push(entry.total_entry);
-                dataMonthExpense.push(
-                  data.month.expenseMonth[index].total_expense
-                  );
-                dataMonthBenefit.push(data.month.benefitMonth[index].benefit);
-                if (entry.month == 1) {
-                  labels.push("Janvier");
-                } else if (entry.month == 2) {
-                  labels.push("Fevrier");
-                } else if (entry.month == 3) {
-                  labels.push("Mars");
-                } else if (entry.month == 4) {
-                  labels.push("Avril");
-                } else if (entry.month == 5) {
-                  labels.push("Mai");
-                } else if (entry.month == 6) {
-                  labels.push("Juin");
-                } else if (entry.month == 7) {
-                  labels.push("Juillet");
-                } else if (entry.month == 8) {
-                  labels.push("Août");
-                } else if (entry.month == 9) {
-                  labels.push("Septembre");
-                } else if (entry.month == 10) {
-                  labels.push("Octobre");
-                } else if (entry.month == 11) {
-                  labels.push("Novembre");
-                } else if (entry.month == 12) {
-                  labels.push("Decembre");
-                }
-              }
-            });
-            this.setState({
-              dataMonthEntry: dataMonthEntry,
-              dataMonthExpense: dataMonthExpense,
-              dataMonthBenefit: dataMonthBenefit,
-              labels: labels,
-            });
-          }
-          this.setLoading(false);
-        });
-      }
+  setTypeFilter = (e) => {
+    this.setState({
+      typeFilter: e.target.value,
     });
   };
 
   render() {
     const {
       loading,
-      totalMonth,
       firstDate,
       secondDate,
       labels,
       dataMonthEntry,
       dataMonthExpense,
       dataMonthBenefit,
+      typeFilter,
     } = this.state;
     if (loading) {
       return <Loading />;
     }
     return (
       <>
-        <div className="bg-light min-vh-50 d-flex flex-row align-items-center">
-          <div className="statistique-input">
-            <CInputGroup className="mb-3">
-              <CFormInput
-                type="date"
-                placeholder="Debut"
-                autoComplete="date"
-                value={firstDate}
-                onChange={this.setFirstDate}
-              />
-            </CInputGroup>
-            <CInputGroup className="mb-3">
-              <CFormInput
-                type="date"
-                placeholder="Fin"
-                autoComplete="date"
-                value={secondDate}
-                onChange={this.setSeconDate}
-              />
-            </CInputGroup>
+        <div className="mb-3 bg-light min-vh-50 d-flex flex-row">
+          <div style={{ width: "100%" }}>
+            <CCard>
+              <CCardHeader>Filtres</CCardHeader>
+              <CCardBody>
+                <CRow>
+                  <CCol>
+                    <CInputGroup className="mb-3">
+                      <CInputGroupText component="label" htmlFor="debut">
+                        Début
+                      </CInputGroupText>
+                      <CFormInput
+                        id="debut"
+                        type="date"
+                        placeholder="Debut"
+                        autoComplete="date"
+                        value={firstDate}
+                        onChange={this.setFirstDate}
+                      />
+                    </CInputGroup>
+                  </CCol>
+                  <CCol>
+                    <CInputGroup className="mb-3">
+                      <CInputGroupText component="label" htmlFor="fin">
+                        Fin
+                      </CInputGroupText>
+                      <CFormInput
+                        id="fin"
+                        type="date"
+                        placeholder="Fin"
+                        autoComplete="date"
+                        value={secondDate}
+                        onChange={this.setSeconDate}
+                      />
+                    </CInputGroup>
+                  </CCol>
+                  <CCol>
+                    <CInputGroup style={{ height: "30px" }}>
+                      <CInputGroupText component="label" htmlFor="offerType">
+                        Type
+                      </CInputGroupText>
+                      <CFormSelect
+                        id="offerType"
+                        onChange={this.setTypeFilter}
+                        value={typeFilter}
+                        required
+                      >
+                        <option value={0}>Tous</option>
+                        <option value={1}>Ouvert</option>
+                        <option value={2}>Restreint</option>
+                        <option value={3}>Préséléction</option>
+                      </CFormSelect>
+                    </CInputGroup>
+                  </CCol>
+                  <CCol>
+                    <CInputGroup style={{ width: "250px", height: "30px" }}>
+                      <CInputGroupText component="label" htmlFor="offerType">
+                        Région
+                      </CInputGroupText>
+                      <CFormSelect
+                        id="offerType"
+                        onChange={this.setTypeFilter}
+                        value={typeFilter}
+                        required
+                      >
+                        <option value={0}>Tous</option>
+                        <option value={1}>Analamanga</option>
+                        <option value={2}>Vakinakaratra</option>
+                        <option value={3}>Alaotra</option>
+                      </CFormSelect>
+                    </CInputGroup>
+                  </CCol>
+                  <CCol>
+                    <CButton style={{ width: "100%" }}>Afficher</CButton>
+                  </CCol>
+                </CRow>
+                {/* <CRow className="align-items-end">
+                </CRow> */}
+              </CCardBody>
+            </CCard>
           </div>
         </div>
         <div className="bg-light min-vh-50 d-flex flex-row align-items-center">
           <div className="statistique-card">
             <CCard>
-              <CCardHeader style={{ backgroundColor: "#198754" }}>
-                Entrée
-              </CCardHeader>
+              <CCardHeader>Appels d'offres</CCardHeader>
               <CCardBody>
-                <CCardTitle className="stat-title">
-                  {totalMonth.entry > 1000 ? (
-                    <>{totalMonth.entry.toLocaleString()} Ar</>
-                  ) : (
-                    <>{totalMonth.entry} Ar</>
-                  )}
-                </CCardTitle>
+                <CCardTitle className="stat-title">1 623</CCardTitle>
               </CCardBody>
             </CCard>
             <CCard>
-              <CCardHeader style={{ backgroundColor: "#dc3545" }}>
-                Sortie
-              </CCardHeader>
+              <CCardHeader>Soumissions</CCardHeader>
               <CCardBody>
-                <CCardTitle className="stat-title">
-                  {totalMonth.expense > 1000 ? (
-                    <>{totalMonth.expense.toLocaleString()} Ar</>
-                  ) : (
-                    <>{totalMonth.expense} Ar</>
-                  )}
-                </CCardTitle>
+                <CCardTitle className="stat-title">18 203</CCardTitle>
               </CCardBody>
             </CCard>
             <CCard>
-              <CCardHeader style={{ backgroundColor: "#0d6efd" }}>
-                Bénéfice
-              </CCardHeader>
+              <CCardHeader>Taux de réussite</CCardHeader>
               <CCardBody>
-                <CCardTitle className="stat-title">
-                  {totalMonth.benefit > 1000 ? (
-                    <>{totalMonth.benefit.toLocaleString()} Ar</>
-                  ) : (
-                    <>{totalMonth.benefit} Ar</>
-                  )}
-                </CCardTitle>
+                <CCardTitle className="stat-title">87%</CCardTitle>
               </CCardBody>
             </CCard>
           </div>
         </div>
         <br></br>
         <div>
-          <CChart
-            type="bar"
-            data={{
-              labels: labels,
-              datasets: [
-                {
-                  label: "Entrée",
-                  backgroundColor: "#198754",
-                  borderColor: "#198754",
-                  borderWidth: 1,
+          <CCard>
+            <CCardHeader>Nombre de soummissions</CCardHeader>
+            <CCardBody>
+              <CChart
+                type="bar"
+                data={{
+                  labels: labels,
+                  datasets: [
+                    {
+                      label: "Janvier",
+                      backgroundColor: "#198754",
+                      borderColor: "#198754",
+                      borderWidth: 1,
 
-                  data: dataMonthEntry,
-                },
-                {
-                  label: "Sortie",
-                  backgroundColor: "#dc3545",
-                  borderColor: "#dc3545",
-                  borderWidth: 1,
+                      data: dataMonthEntry,
+                    },
+                    {
+                      label: "Fevrier",
+                      backgroundColor: "#198754",
+                      borderColor: "#198754",
+                      borderWidth: 1,
 
-                  data: dataMonthExpense,
-                },
-                {
-                  label: "Bénéfice",
-                  backgroundColor: "#0d6efd",
-                  borderColor: "#0d6efd",
-                  borderWidth: 1,
-
-                  data: dataMonthBenefit,
-                },
-              ],
-            }}
-            labels="months"
-          />
+                      data: dataMonthExpense,
+                    },
+                    {
+                      label: "Mars",
+                      backgroundColor: "#198754",
+                      borderColor: "#198754",
+                      borderWidth: 1,
+                      data: dataMonthBenefit,
+                    },
+                  ],
+                }}
+                labels="months"
+              />
+            </CCardBody>
+          </CCard>
         </div>
       </>
     );
@@ -251,27 +212,15 @@ export default class GlobalStatistique extends React.Component {
       loading: state,
     });
   }
-  setFirstDateDefault(date) {
-    this.setState({
-      firstDateDefault: date,
-    });
-  }
-  setSeconDateDefault(date) {
-    this.setState({
-      secondDateDefault: date,
-    });
-  }
 
   setFirstDate = (e) => {
     this.setState({
       firstDate: e.target.value,
     });
-    this.getGlobalStatistique(e.target.value, this.state.secondDate);
   };
   setSeconDate = (e) => {
     this.setState({
       secondDate: e.target.value,
     });
-    this.getGlobalStatistique(this.state.firstDate, e.target.value);
   };
 }

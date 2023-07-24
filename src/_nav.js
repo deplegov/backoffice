@@ -8,6 +8,20 @@ const nav = [
   [
     {
       component: CNavTitle,
+      name: "Statistique",
+      menu: [
+        {
+          component: CNavItem,
+          name: "Tableau de bord",
+          to: "/statistique/global",
+          icon: <CIcon icon={cilCreditCard} customClassName="nav-icon" />,
+        },
+      ],
+    },
+  ],
+  [
+    {
+      component: CNavTitle,
       name: " Gestion des inscription ",
       menu: [
         {
@@ -36,26 +50,6 @@ const nav = [
         //   to: "/Customer/list",
         //   icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
         // },
-      ],
-    },
-  ],
-  [
-    {
-      component: CNavTitle,
-      name: "Statistique",
-      menu: [
-        {
-          component: CNavItem,
-          name: "Tableau de bord",
-          to: "/statistique/global",
-          icon: <CIcon icon={cilCreditCard} customClassName="nav-icon" />,
-        },
-        {
-          component: CNavItem,
-          name: "Statistique global",
-          to: "/statistique/global",
-          icon: <CIcon icon={cilCreditCard} customClassName="nav-icon" />,
-        },
       ],
     },
   ],
