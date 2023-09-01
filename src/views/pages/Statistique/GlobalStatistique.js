@@ -28,11 +28,13 @@ export default class GlobalStatistique extends React.Component {
       typeFilter: 0,
       tenders: 0,
       soumissions: 0,
+      reussite: 0,
     };
   }
   componentDidMount() {
     this.getTenderCount();
     this.getSoumissionCount();
+    this.getReussiteCount();
   }
 
   getTenderCount() {
@@ -70,6 +72,27 @@ export default class GlobalStatistique extends React.Component {
         return res.json().then((data) => {
           this.setState({
             soumissions: data.count,
+          });
+          this.setLoading(false);
+        });
+      }
+    });
+  }
+
+  getReussiteCount() {
+    let wheres = [];
+    if (this.state.firstDate !== "")
+      wheres.push(`date1=${this.state.firstDate}`);
+    if (this.state.secondDate !== "")
+      wheres.push(`date2=${this.state.secondDate}`);
+    wheres = wheres.join('&');
+    if(wheres!=='') wheres=`?${wheres}`;
+    this.setLoading(true);
+    fetch(api(`soumissions/reussite${wheres}`), { method: "GET" }).then((res) => {
+      if (res.ok) {
+        return res.json().then((data) => {
+          this.setState({
+            reussite: data.count,
           });
           this.setLoading(false);
         });
@@ -198,7 +221,7 @@ export default class GlobalStatistique extends React.Component {
             <CCard>
               <CCardHeader>Taux de réussite</CCardHeader>
               <CCardBody>
-                <CCardTitle className="stat-title">87%</CCardTitle>
+                <CCardTitle className="stat-title">{Number(this.state.reussite).toPrecision(2)}%</CCardTitle>
               </CCardBody>
             </CCard>
           </div>
