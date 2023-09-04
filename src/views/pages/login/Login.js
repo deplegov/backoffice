@@ -20,8 +20,8 @@ export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: "",
-      password: "",
+      username: "luc.rabe@gmail.com",
+      password: "mdpprom13",
       error: "",
       loading: false,
     };
